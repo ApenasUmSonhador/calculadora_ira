@@ -18,8 +18,7 @@ def nova_disciplina():
     status = (
         (
             input(
-                "Qual o Status da disciplina? \n\
-                    [A]Aprovada [B]Reprovada por nota [C]Reprovada por falta [D]Trancada \n"
+                "Qual o Status da disciplina? \n[A]Aprovada [B]Reprovada por nota [C]Reprovada por falta [D]Trancada \n"
             )
         )
         .strip()
