@@ -95,11 +95,9 @@ while True:
     limpar()
     print("DISCIPLINAS:")
     print()
-    i = 1
     for disciplina in lista_de_cadeiras:
         print(disciplina)
         print()
-        i += 1
     if decisao == True:
         break
 
