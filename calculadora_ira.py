@@ -14,20 +14,20 @@ def limpar():
 
 # Função que será responsável pela criação dos dicionários das disciplinas
 def nova_disciplina():
-    codigo = input("Digite o Código da disciplina: ")
+    codigo = input(" - Digite o Código da disciplina: ")
     status = (
         (
             input(
-                "Qual o Status da disciplina? \n[A]Aprovada [B]Reprovada por nota [C]Reprovada por falta [D]Trancada \n"
+                " - Qual o Status da disciplina? \n   [A]Aprovada [B]Reprovada por nota [C]Reprovada por falta [D]Trancada \n   "
             )
         )
         .strip()
         .title()
     )
-    carga = int(input("Digite a carga horária da disciplina ao todo no semestre: "))
+    carga = int(input(" - Digite a carga horária da disciplina ao todo no semestre: "))
     periodo = int(
         input(
-            "Digite o semestre (adotando o semestre 1 o que foi de seu ingresso na UFC) em que fez essa disciplina: "
+            " - Digite o semestre (adotando o semestre 1 o que foi de seu ingresso na UFC) em que fez essa disciplina: "
         )
     )
     if status.startswith("A"):
@@ -39,7 +39,7 @@ def nova_disciplina():
     elif status.startswith("D"):
         status = "Trancado"
     if status != "Trancado":
-        nota = float(input("Digite a nota final na disciplina: "))
+        nota = float(input(" - Digite a nota final na disciplina: ").replace(',','.'))
 
     disciplina = {
         "Código": codigo,
@@ -53,46 +53,31 @@ def nova_disciplina():
 
 # Função que fará o calculo do IRA
 def calcula_IRA():
-    def somatorio_de_chave(chave):
-        somatorio = 0
-        if chave == "trancadas":
-            for cadeira in lista_de_cadeiras:
-                if cadeira["Status"] == "Trancado":
-                    somatorio += cadeira["Carga Horária"]
+    # Carga horária das disciplinas trancadas
+    t = sum(cadeira["Carga Horária"] for cadeira in lista_de_cadeiras if cadeira["Status"] == "Trancado")
+    # Carga horária total
+    c = somatorio = sum(cadeira["Carga Horária"] for cadeira in lista_de_cadeiras)
+    # Somatório de (período x carga horária x nota) DAS DISCIPLINAS NÃO TRANCADAS
+    s1 = 0
+    for cadeira in lista_de_cadeiras:
+        if cadeira["Status"] != "Reprovado por falta" and cadeira["Status"] != "Trancado":
+            s1 += (
+                min(cadeira["Período"],6)
+                * cadeira["Carga Horária"]
+                * cadeira["Nota Final"]
+            )
+    # Somatório de (período x carga horária) DAS DISCIPLINAS NÃO TRANCADAS
+    s2 = 0
+    for cadeira in lista_de_cadeiras:
+        if cadeira["Status"] != "Reprovado por falta" and cadeira["Status"] != "Trancado":
+            s2 += (
+                min(cadeira["Período"],6)
+                * cadeira["Carga Horária"]
+            )
 
-        elif chave == "carga":
-            for cadeira in lista_de_cadeiras:
-                somatorio += cadeira["Carga Horária"]
-
-        elif chave == "nota final * periodo * carga horaria":
-            for cadeira in lista_de_cadeiras:
-                if (
-                    cadeira["Status"] != "Reprovado por falta"
-                    and cadeira["Status"] != "Trancado"
-                ):
-                    somatorio += (
-                        min(cadeira["Período"],6)
-                        * cadeira["Carga Horária"]
-                        * cadeira["Nota Final"]
-                    )
-
-        elif chave == "carga horaria * periodo":
-            for cadeira in lista_de_cadeiras:
-                if cadeira["Status"] != "Trancado":
-                    somatorio += min(cadeira["Período"],6) * cadeira["Carga Horária"]
-
-        elif chave == "carga":
-            for cadeira in lista_de_cadeiras:
-                somatorio += cadeira["Carga Horária"]
-
-        return somatorio
-
-    t = somatorio_de_chave("trancadas")
-    c = somatorio_de_chave("carga")
-    s1 = somatorio_de_chave("nota final * periodo * carga horaria")
-    s2 = somatorio_de_chave("carga horaria * periodo")
 
     # Formula dada pelo proprio site da UFC
+    # https://prograd.ufc.br/pt/perguntas-frequentes/ira/
     ira = (1 - 0.5 * (t / c)) * (s1 / s2) * 1000
 
     return ira
@@ -102,7 +87,7 @@ def calcula_IRA():
 while True:
     nova_disciplina()
     decisao = (
-        (input("Existe alguma outra disciplina a ser adicionada?\n [S]Sim [N]Nao: "))
+        (input(" - Existe alguma outra disciplina a ser adicionada?\n   [S]Sim [N]Nao\n   "))
         .strip()
         .title()
         .startswith("N")
