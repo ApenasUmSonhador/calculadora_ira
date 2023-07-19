@@ -72,7 +72,7 @@ def calcula_IRA():
                     and cadeira["Status"] != "Trancado"
                 ):
                     somatorio += (
-                        cadeira["Período"]
+                        min(cadeira["Período"],6)
                         * cadeira["Carga Horária"]
                         * cadeira["Nota Final"]
                     )
@@ -80,7 +80,7 @@ def calcula_IRA():
         elif chave == "carga horaria * periodo":
             for cadeira in lista_de_cadeiras:
                 if cadeira["Status"] != "Trancado":
-                    somatorio += cadeira["Período"] * cadeira["Carga Horária"]
+                    somatorio += min(cadeira["Período"],6) * cadeira["Carga Horária"]
 
         elif chave == "carga":
             for cadeira in lista_de_cadeiras:
