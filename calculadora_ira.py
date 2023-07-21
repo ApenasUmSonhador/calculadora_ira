@@ -1,6 +1,6 @@
 from os import system, name
 
-lista_de_cadeiras = []
+cadeiras = []
 
 
 # Funções.
@@ -94,7 +94,7 @@ def nova_disciplina():
         "Período": periodo,
         "Nota Final": "Trancado" if status == "Trancado" else nota,
     }
-    lista_de_cadeiras.append(disciplina)
+    cadeiras.append(disciplina)
 
 
 # Função que fará o calculo do IRA
@@ -102,14 +102,14 @@ def calcula_IRA():
     # t = Carga horária das disciplinas trancadas
     t = sum(
         cadeira["Carga Horária"]
-        for cadeira in lista_de_cadeiras
+        for cadeira in cadeiras
         if cadeira["Status"] == "Trancado"
     )
     # c = Carga horária total
-    c = sum(cadeira["Carga Horária"] for cadeira in lista_de_cadeiras)
+    c = sum(cadeira["Carga Horária"] for cadeira in cadeiras)
     # s1 = Somatório de (período * carga horária * nota) das disciplinas NÃO trancadas
     s1 = 0
-    for cadeira in lista_de_cadeiras:
+    for cadeira in cadeiras:
         if (
             cadeira["Status"] != "Reprovado por falta"
             and cadeira["Status"] != "Trancado"
@@ -121,7 +121,7 @@ def calcula_IRA():
             )
     # s2 = Somatório de (período * carga horária) das disciplinas NÃO trancadas
     s2 = 0
-    for cadeira in lista_de_cadeiras:
+    for cadeira in cadeiras:
         if (
             cadeira["Status"] != "Reprovado por falta"
             and cadeira["Status"] != "Trancado"
@@ -130,9 +130,9 @@ def calcula_IRA():
 
     # Fórmula dada pelo proprio site da UFC
     # https://prograd.ufc.br/pt/perguntas-frequentes/ira/
-    ira = (1 - 0.5 * (t / c)) * (s1 / s2) * 1000
-
-    return ira
+    iraIndividual = (1 - 0.5 * (t / c)) * (s1 / s2) * 1000
+    iraGeral = None  # 6 + 2 * (iraIndividual - iraMedio) / iraDP
+    return iraIndividual, iraGeral
 
 
 # Código principal
@@ -151,11 +151,12 @@ while True:
     limpar()
     print("DISCIPLINAS:")
     print()
-    for disciplina in lista_de_cadeiras:
+    for disciplina in cadeiras:
         print(disciplina)
         print()
     if decisao == True:
-        ira = calcula_IRA()
+        iraIndividual, iraGeral = calcula_IRA()
         # Adoto que a ideia de multiplicar por 1000 é para desconsiderar casas decimais.
-        print(f"Seu IRA é de {round(ira)}")
+        print(f"Seu IRA individual é de {round(iraIndividual)}")
+        print("O IRA geral ainda esta em desenvolvimento")
         break
