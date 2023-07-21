@@ -1,6 +1,6 @@
 from os import system, name
 
-cadeiras = []
+disciplinas = []
 
 
 # Funções.
@@ -94,7 +94,7 @@ def nova_disciplina():
         "Período": periodo,
         "Nota Final": "Trancado" if status == "Trancado" else nota,
     }
-    cadeiras.append(disciplina)
+    disciplinas.append(disciplina)
 
 
 # Função que fará o calculo do IRA
@@ -102,14 +102,14 @@ def calcula_IRA():
     # t = Carga horária das disciplinas trancadas
     t = sum(
         cadeira["Carga Horária"]
-        for cadeira in cadeiras
+        for cadeira in disciplinas
         if cadeira["Status"] == "Trancado"
     )
     # c = Carga horária total
-    c = sum(cadeira["Carga Horária"] for cadeira in cadeiras)
+    c = sum(cadeira["Carga Horária"] for cadeira in disciplinas)
     # s1 = Somatório de (período * carga horária * nota) das disciplinas NÃO trancadas
     s1 = 0
-    for cadeira in cadeiras:
+    for cadeira in disciplinas:
         if (
             cadeira["Status"] != "Reprovado por falta"
             and cadeira["Status"] != "Trancado"
@@ -121,7 +121,7 @@ def calcula_IRA():
             )
     # s2 = Somatório de (período * carga horária) das disciplinas NÃO trancadas
     s2 = 0
-    for cadeira in cadeiras:
+    for cadeira in disciplinas:
         if (
             cadeira["Status"] != "Reprovado por falta"
             and cadeira["Status"] != "Trancado"
@@ -151,9 +151,10 @@ while True:
     limpar()
     print("DISCIPLINAS:")
     print()
-    for disciplina in cadeiras:
+    for disciplina in disciplinas:
         print(disciplina)
         print()
+
     if decisao == True:
         iraIndividual, iraGeral = calcula_IRA()
         # Adoto que a ideia de multiplicar por 1000 é para desconsiderar casas decimais.
