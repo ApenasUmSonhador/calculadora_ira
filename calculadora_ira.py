@@ -158,6 +158,6 @@ while True:
     if decisao == True:
         iraIndividual, iraGeral = calcula_IRA()
         # Adoto que a ideia de multiplicar por 1000 é para desconsiderar casas decimais.
-        print(f"Seu IRA individual é de {round(iraIndividual)}")
+        print(f"Seu IRA individual é de {round(iraIndividual/1000,4)}")
         print("O IRA geral ainda esta em desenvolvimento")
         break
